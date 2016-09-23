@@ -23,3 +23,5 @@ cdef JNIEnv *get_jnienv() except NULL:
 def detach():
     jvm[0].DetachCurrentThread(jvm)
 
+def destroy():
+    jvm[0].DestroyJavaVM(jvm)
