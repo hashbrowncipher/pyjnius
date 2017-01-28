@@ -38,7 +38,7 @@ library_dirs = []
 lib_location = None
 extra_link_args = []
 include_dirs = []
-install_requires = ['six>=1.7.0']
+install_requires = ['six>=1.7.0', 'cython']
 
 # detect Python for android
 platform = sys.platform
@@ -46,21 +46,10 @@ ndkplatform = getenv('NDKPLATFORM')
 if ndkplatform is not None and getenv('LIBLINK'):
     platform = 'android'
 
-# detect cython
 try:
-    from Cython.Distutils import build_ext
-    install_requires.append('cython')
+    from setuptools.command.build_ext import build_ext
 except ImportError:
-    try:
-        from setuptools.command.build_ext import build_ext
-    except ImportError:
-        from distutils.command.build_ext import build_ext
-    if platform != 'android':
-        print('\n\nYou need Cython to compile Pyjnius.\n\n')
-        raise
-    # On Android we expect to see 'c' files lying about.
-    # and we go ahead with the 'desktop' file? Odd.
-    files = [fn[:-3] + 'c' for fn in files if fn.endswith('pyx')]
+    from distutils.command.build_ext import build_ext
 
 if platform == 'android':
     # for android, we use SDL...
